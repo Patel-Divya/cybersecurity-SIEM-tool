@@ -109,10 +109,7 @@
     </div>
     
     <script>
-      // const urlParams = new URLSearchParams(window.location.search);
-      // const category = urlParams.get('category');
       document.getElementById('heading').innerText = `${category.charAt(0).toUpperCase() + category.slice(1)} ${level.charAt(0).toUpperCase() + level.slice(1)} Logs`
-      // const level= urlParams.get('level');
       console.log("Type from URL:", category, level);
     </script>
     
@@ -168,7 +165,6 @@
 
           console.log(log)
 
-          // Build readable HTML content
           const content = `
               <h3 style="margin-top: 0;">Log Details</h3>
               <p><strong>Event ID:</strong> ${log.event_id || log.EventID || "N/A"}</p>
