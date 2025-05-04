@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PARSHURAM - Contact Us</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Header Section */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 20px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 90px;
+        }
+
+        .title-container {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            text-align: left;
+        }
+
+        .title {
+            font-size: 3.1rem;
+            font-weight: bold;
+            display: flex;
+        }
+
+        .title span {
+            animation: letterColorChange 3s infinite;
+            animation-delay: calc(0.4s * var(--i));
+            display: inline-block;
+        }
+
+        @keyframes letterColorChange {
+
+            0%,
+      100% {
+        color: rgba(206, 141, 141, 0.979);
+      }
+
+      33% {
+        color: #ff3403;
+      }
+
+      66% {
+        color: rgb(255, 255, 255);
+      }
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: white;
+            margin-top: 5px;
+        }
+
+        .nav-bar {
+            display: flex;
+            position: absolute;
+            top: 20px;
+            right: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 10px;
+        }
+
+        .nav-bar a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            margin: 0 15px;
+            padding: 8px;
+            transition: 0.3s;
+        }
+
+        .nav-bar a:hover {
+            background: #ff3403;
+            border-radius: 5px;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            margin-top: 140px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            width: 100%;
+        }
+
+        .contact-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+            animation: fadeIn 1s ease forwards;
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .contact-card h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #ff3403;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 1rem;
+            margin-bottom: 6px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1rem;
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #ff3403;
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.02);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            background: #ff3403;
+            border: none;
+            color: black;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: #ffa500cc;
+        }
+
+        /* Social Icons */
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 15px;
+        }
+
+        .social-icons a {
+            color: white;
+            font-size: 1.5rem;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: #ff3403;
+            transform: scale(1.2);
+        }
+
+        @media (max-width: 600px) {
+            .contact-card {
+                padding: 25px 18px;
+            }
+
+            .nav-bar {
+                flex-direction: column;
+                right: 10px;
+                top: 100px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="title-container" onclick="window.location.href='/'" style="cursor: pointer;">
+            <div class="title">
+                <span style="--i:0;">P</span>
+                <span style="--i:1;">A</span>
+                <span style="--i:2;">R</span>
+                <span style="--i:3;">S</span>
+                <span style="--i:4;">H</span>
+                <span style="--i:5;">U</span>
+                <span style="--i:6;">R</span>
+                <span style="--i:7;">A</span>
+                <span style="--i:8;">M</span>
+            </div>
+            <div class="subtitle">A Security Platform</div>
+        </div>
+
+        <div class="nav-bar">
+            <a href="http://127.0.0.1:5000/home.html">Home</a>
+            <a href="http://127.0.0.1:5000/dashboard/dashboard.html">Dashboard</a>
+            <a href="http://127.0.0.1:5000/aboutus.html">About</a>
+            <a href="#">Contact</a>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <section class="contact-section">
+        <div class="contact-card">
+            <h2>Contact Us</h2>
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input id="name" name="name" type="text" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input id="email" name="email" type="email" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">Send Message</button>
+                <div class="social-icons">
+                    <a href="https://github.com/" target="_blank"><i class="fab fa-github"></i></a>
+                    <a href="https://linkedin.com/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://twitter.com/" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="mailto:someone@example.com"><i class="fas fa-envelope"></i></a>
+                </div>
+            </form>
+        </div>
+    </section>
+    <script>
+        function showSuccessMessage(event) {
+            event.preventDefault();
+            alert("Thank you for contacting us!");
+
+            document.getElementById("contactForm").reset();
+        }
+    </script>
+</body>
+
+</html>

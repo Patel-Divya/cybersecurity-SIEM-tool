@@ -1,0 +1,226 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PARSHURAM - Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="header">
+    <div class="title-container" onclick="window.location.href='/'" style="cursor: pointer;">
+      <div class="title">
+        <span style="--i:0;">P</span><span style="--i:1;">A</span><span style="--i:2;">R</span>
+        <span style="--i:3;">S</span><span style="--i:4;">H</span><span style="--i:5;">U</span>
+        <span style="--i:6;">R</span><span style="--i:7;">A</span><span style="--i:8;">M</span>
+      </div>
+      <div class="subtitle">A Security Platform</div>
+    </div>
+
+    <div class="nav-bar">
+      <a href="http://127.0.0.1:5000/home.html">Home</a>
+      <a href="http://127.0.0.1:5000/dashboard/dashboard.html">Dashboard</a>
+      <a href="http://127.0.0.1:5000/aboutus.html">About</a>
+      <a href="http://127.0.0.1:5000/ContactUs.html">Contact</a>
+    </div>
+  </div>
+
+  <div class="dashboard-container">
+    <div class="sidebar">
+      <a href="chart.html?pe=all" data-category="all" data-target="threatAnalysisSection">All Threats</a>
+      <a href="chart.html?type=security" data-category="security" data-target="threatAnalysisSection">Security Threats</a>
+      <a href="chart.html?type=system" data-category="system" data-target="threatAnalysisSection">System Threats</a>
+      <a href="chart.html?type=application" data-category="application" data-target="threatAnalysisSection">App Threats</a>
+      <a href="audit.html" data-category="system" data-target="threatAnalysisSection">Marked For Review</a>
+    </div>
+    <div class="content" style="padding-top: 5px;">
+      <h2 id="heading" style="margin:0;">Audit Logs</h2>
+      <div id="LogTableContent" style="display: block;">
+        <div id="logTable" style="display: table; width: 100%; margin-top: 0px;">
+          <div class="back-button-wrapper">
+            <div class="back-button-wrapper">
+              <select name="sort" id="backButton">
+                <option value="none">Sort By</option>
+                <option value="newFirst">New First</option>
+                <option value="oldFirst">Old First</option>
+                <option value="maxThreats">Threats Max</option>
+                <option value="minThreats">Threats Max</option>
+              </select>
+              <button id="backButton">Filter By</button>
+            </div>
+            <button id="solvedCounter">Logs Fixed: 0</button>
+          </div>
+          <div class="table-container" id="table-container">
+            <!-- <div style="max-height: 400px; overflow-x: auto; overflow-y: auto; border: 1px solid #555; border-radius: 8px;"> -->
+            <table style="width: 100%; border-collapse: collapse; color: white;">
+              <thead style="background-color: orange; color: black; position: sticky; top: 0px; width: 100%;">
+                <tr>
+                  <th style="padding: 10px; border: 1px solid #fff;">Event ID</th>
+                  <th style="padding: 10px; border: 1px solid #fff;">Message</th>
+                  <th style="padding: 10px; border: 1px solid #fff;">Time Created</th>
+                  <th style="padding: 10px; border: 1px solid #fff;">Category</th>
+                  <th style="padding: 10px; border: 1px solid #fff;">Modified</th>
+                  <th style="padding: 10px; border: 1px solid #fff;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="logTableBody" style="background-color: #000000;">
+                <!-- Logs will populate here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div id="logModal" class="modal-content" style="
+          display: none;
+          position: fixed;
+          top: 25%;
+          left: 55%;
+          transform: translateX(-50%);
+          background: rgb(19, 18, 18);
+          padding: 20px;
+          border: 2px solid #333;
+          border-radius: 10px;
+          box-shadow: 0 0 10px rgba(0,0,0,0.3);
+          z-index: 1000;
+          max-width: 500px;
+        ">
+          <div id="logModalContent"></div>
+          <button onclick="document.getElementById('logModal').style.display='none'"
+            style="margin-top: 10px;">Close</button>
+        </div>
+      </div>
+    </div>
+    
+    <script>
+      fetch(`http://localhost:5000/getMarkedAsReview`)
+        .then(response => response.json())
+        .then(data => {
+          console.log('Logs:', data);
+          const tbody = document.getElementById("logTableBody");
+          tbody.innerHTML = "";
+
+          if (data.length === 0) document.getElementById('table-container').innerHTML = '<div style="text-align:center; padding: 1rem; font-weight: bold; color: orange">Nothing to See Here</div>';
+
+
+          data.forEach(log => {
+            const row = document.createElement("tr");
+
+            const eventId = log.event_id || log.EventID || "N/A";
+
+            row.innerHTML = `
+                <td>${eventId}</td>
+                <td>${log.Message || "No message"}</td>
+                <td>${log.time_created || log.TimeCreated || "-"}</td>
+                <td>${log.Category || "-"}</td>
+                ${[true, false].includes(log.modified) ? `<td style='color:${log.modified ? 'red' : 'green'}'>${log.modified ? 'Yes' : 'No'}</td>` : ''}
+                <td><button onclick="fixLogFromList(${eventId},'${log.TimeCreated}', ${log.Level}, '${log.Category}')">Fix</button>
+                <button onclick="viewLogDetails(${eventId}, '${log.TimeCreated}', ${log.Level}, '${log.Category}')">Details</button></td>
+              `;
+
+            tbody.appendChild(row);
+          });
+        })
+        .catch((error) => {
+          console.error('Error fetching logs:', error);
+          alert("An error occured while fetching")
+        });
+    </script>
+
+    <script>
+      async function viewLogDetails(eventId, time, level, category) {
+        try {
+          const response = await fetch(`http://localhost:5000/resolvedLog/${encodeURIComponent(category)}/${encodeURIComponent(level)}/${encodeURIComponent(eventId)}/${encodeURIComponent(time)}`);
+          const log = await response.json();
+
+          if (!log || log.error) {
+            alert("Log not found.");
+            return;
+          }
+
+          console.log(log)
+
+          // Build readable HTML content
+          const content = `
+              <h3 style="margin-top: 0;">Log Details</h3>
+              <p><strong>Event ID:</strong> ${log.event_id || log.EventID || "N/A"}</p>
+              <p><strong>Category:</strong> ${log.category || "Unknown"}</p>
+              <p><strong>Source:</strong> ${log.source || log.Source || "N/A"}</p>
+              <p><strong>Computer:</strong> ${log.Computer || "N/A"}</p>
+              <p><strong>Level:</strong> ${log.Level || "N/A"}</p>
+              <p><strong>Message:</strong> ${log.Message || "N/A"}</p>
+              <p><strong>Time Created:</strong> ${log.time_created || log.TimeCreated || "N/A"}</p>
+              <p><strong>Task:</strong> ${log.task || log.Task || "N/A"}</p>
+          `;
+
+          document.getElementById("logModalContent").innerHTML = content;
+          document.getElementById("logModal").style.display = "block";
+
+        } catch (err) {
+          console.error("Error fetching log details:", err);
+          alert("Failed to load log details. Check console.");
+        }
+      }
+
+      async function fixLogFromList(eventId, time, level, category) {
+        console.log("🛠 Attempting to fix log:", eventId, category);
+
+        if (!confirm("Are you sure you want to fix (delete) this log?")) return;
+
+        try {
+          const response = await fetch('/delete', {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              eventId,
+              time,
+              level,
+              category
+            }),
+          });
+
+          const result = await response.json();
+
+          if (response.ok && result.success) {
+            console.log('✅ Log deleted successfully:', result);
+            getResolvedCount();
+            alert(result.message || 'Log deleted successfully!');
+          } else {
+            console.error('❌ Failed to delete log:', result);
+            alert(result.message || 'Failed to delete log');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert('Error while deleting log');
+        }
+      }
+    
+      async function getResolvedCount() {
+        try {
+          const response = await fetch(`http://localhost:5000/allResolvedCount`);
+          const resolvedCount = await response.json();
+
+          if (!resolvedCount) {
+            console.log("Found 0 resolved logs for this category and level.");
+            return;
+          }
+      
+          document.getElementById('solvedCounter').innerText = `Logs Fixed: ${resolvedCount}`;
+          
+        } catch (error) {
+          console.warn('An error occured while fetching resolved log count: ',error);
+          alert('An error occured while fetching resolved log count!');
+        }
+      }
+
+      getResolvedCount()
+    </script>
+</body>
+
+</html>
