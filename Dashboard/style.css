@@ -1,0 +1,450 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #000;
+    color: white;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Header Section */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 90px;
+}
+
+.title-container {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    text-align: left;
+}
+
+.title {
+    font-size: 3.1rem;
+    font-weight: bold;
+    display: flex;
+}
+
+.title span {
+    animation: letterColorChange 3s infinite;
+    animation-delay: calc(0.4s * var(--i));
+    display: inline-block;
+}
+
+@keyframes letterColorChange {
+    0%,
+      100% {
+        color: rgba(206, 141, 141, 0.979);
+      }
+
+      33% {
+        color: #ff3403;
+      }
+
+      66% {
+        color: rgb(255, 255, 255);
+      }
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    color: white;
+    margin-top: 5px;
+}
+
+.nav-bar {
+    display: flex;
+    position: absolute;
+    top: 20px;
+    right: 50px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 10px 20px ;
+    border-radius: 10px;
+}
+
+.nav-bar a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.2rem;
+    margin: 0 15px;
+    padding: 8px;
+    transition: 0.3s;
+}
+
+.nav-bar a:hover {
+    background: #ff3403;
+    border-radius: 5px;
+}
+
+.dashboard-container {
+    display: flex;
+    margin-top: 120px;
+    width: 100%;
+    height: 100%;
+    margin-left: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.sidebar {
+    width: 200px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    height: 88%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-radius: 10px;
+    margin-left: 10px;
+    font-family: Arial, sans-serif;
+}
+
+.sidebar a {
+    /* display: block;
+    color: white;
+    text-decoration: none;
+    font-size: 1.1rem;
+    margin: 10px 0;
+    transition: 0.3s; */
+
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: #ccc;
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease ;
+    border-radius: 8px; 
+    margin: 6px 10px;
+    font-size: 1.1em;
+}
+
+.sidebar a:hover,.sidebar a.active {
+    font-weight: bold;
+    background: #ff3403;
+    border-radius: 5px;
+    
+}
+
+.sidebar a i {
+    margin-right: 12px;
+    font-size: 16px;
+  }
+
+.sidebar a:hover i,
+.sidebar a.active i {
+  color: #fff;
+}
+.content {
+    /* flex: 1; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    padding: 20px;
+    width: 100%;
+    height: 90%;
+}
+
+.content h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #ff3403 ;
+}
+
+.content-wrapper {
+    padding-top: 50px;
+    display: flex;
+    width: 90%;
+    justify-content: space-evenly;
+    /* align-items: center; */
+    max-width: 1000px;
+
+    /* flex-direction: column; */
+}
+
+.chart-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 45%;
+}
+
+.chart-container {
+    width: 100%;
+
+    min-width: 300px;
+    max-width: 350px;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chart-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Legend Customization */
+.legend-container {
+    display: flex;
+    /* flex-direction: column;
+    align-items: flex-start;
+    margin-left: 20px; */
+
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+}
+
+.legend-color {
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    margin-right: 5px;
+    border-radius: 3px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* gap: 15px;
+    width: 40%; */
+
+    gap: 20px;
+    /* margin-top: 20px; */
+    width: 45%;
+}
+
+.grid-item {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 10px;
+    margin-block: auto;
+}
+
+.table-container {
+  /* max-height: 348px; */
+  max-height: 60vh;
+  overflow: auto; /* existing */
+  overflow-y: auto; /* ✅ add this line */
+  border: 1px solid #555;
+  border-radius: 8px;
+}
+
+#LogTableContent {
+    width: 100%;
+    height: 100%;
+    background-color: #020202;
+    /* padding: 20px; */
+    box-sizing: border-box;
+    overflow-y: hidden;
+    border-radius: 10px;
+    display: none;
+}
+
+.LogTableContent {
+    display: none !important;
+}
+
+.back-button-wrapper {
+    display: flex;
+    height: 40px;
+    justify-content:space-between;
+}
+
+/* #backButton {
+    background-color: transparent;
+    color: rgb(249, 246, 246);
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    padding: 8px 12px;
+    transition: all 0.3s ease;
+}
+
+#backButton:hover {
+    color: #ff9900; 
+    text-decoration: underline;
+} */
+
+#backButton, #solvedCounter {
+    background-color: transparent;
+    color: rgb(249, 246, 246);
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    /* padding: 8px 12px; */
+    transition: all 0.3s ease;
+    justify-content: center;
+}
+
+#backButton:hover , #solvedCounter:hover {
+    color: #ff3403;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    color: white;
+}
+
+th, td {
+    padding: 12px 10px;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid #fff;
+    font-size: 16px;
+    line-height: 1.5;
+    box-sizing: border-box;
+}
+
+thead {
+    background-color: #ff3403;
+    color: black;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+tbody {
+    background-color: #111;
+}
+
+#logTable div::-webkit-scrollbar {
+    width: 10px;
+}
+#logTable div::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 8px;
+}
+#logTable div::-webkit-scrollbar-track {
+    background-color: #222;
+}
+#logModal {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+} 
+
+/* ====== Widgets Layout ====== */
+.content-widgets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    align-items: flex-start;
+    margin-top: 20px;
+}
+
+  /* ====== Individual Widget Box ====== */
+.widget {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 25px;
+    width: 700px;
+    height: 400px;
+    display: flex;
+    flex-direction:column;
+    align-items: center;
+    box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.08);
+    justify-content: center;
+}
+
+/* Circle smaller and centered */
+.circle-wrapper {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.circle-wrapper canvas {
+    width: 100px !important; /* Make canvas small */
+    height: 100px !important;
+}
+.widget.threat-widget {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 20px;
+    width: 400px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.08);
+}
+/* Threat Chart Styling */
+#threatCountChart {
+    width: 150px !important;  /* you can change size here */
+    height: 150px !important;
+    margin-bottom: 20px;
+    background-color: transparent; /* transparent by default */
+    /* border: 2px solid orange;   (optional if you want a border) */
+    /* border-radius: 50%;         (optional for circle background) */
+}
+
+  /* ====== Threat Widget Specific Styles ====== */
+.threat-widget {
+    position: relative;
+}
+
+.widget-info {
+    margin-top: 10px;
+    text-align: center;
+  }
+  
+  .widget-info h3 {
+    font-size: 1.6rem;
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+  
+  .widget-info p {
+    font-size: 1.1rem;
+    margin: 2px 0;
+    color: #ccc;
+  }
+  .widget-info span {
+    font-weight: bold;
+    color: orange;
+  }
+  
+  #barGraphWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+/* Chart inside bar graph */
+#logSeverityChart {
+    width: 100% !important;
+    height: 100% !important;
+  }
