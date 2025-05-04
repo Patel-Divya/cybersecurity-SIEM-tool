@@ -1,0 +1,200 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- <title>Document</title> -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PARSHURAM - Dashboard</title>
+  <link rel="shortcut icon" href="./Resources/big.png" type="image/x-icon" hight="auto" width="auto">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="header">
+    <div class="title-container" onclick="window.location.href='/'" style="cursor: pointer;">
+      <div class="title">
+        <span style="--i:0;">P</span><span style="--i:1;">A</span><span style="--i:2;">R</span>
+        <span style="--i:3;">S</span><span style="--i:4;">H</span><span style="--i:5;">U</span>
+        <span style="--i:6;">R</span><span style="--i:7;">A</span><span style="--i:8;">M</span>
+      </div>
+      <div class="subtitle">A Security Platform</div>
+    </div>
+
+    <div class="nav-bar">
+      <a href="http://127.0.0.1:5000/home.html">Home</a>
+      <a href="http://127.0.0.1:5000/dashboard/dashboard.html">Dashboard</a>
+      <a href="http://127.0.0.1:5000/aboutus.html">About</a>
+      <a href="http://127.0.0.1:5000/ContactUs.html">Contact</a>
+    </div>
+  </div>
+
+  <div class="dashboard-container">
+    <div class="sidebar">
+      <a href="alerts.html" data-category="all" data-target="threatAnalysisSection">
+        <i class="fa fa-bell"></i><span id="alerts"> Alerts</span>
+      </a>
+      <a href="chart.html?type=all" data-category="all" data-target="threatAnalysisSection">
+        <i class="fas fa-bug"></i><span> All Threats</span>
+      </a>
+      <a href="chart.html?type=security" data-category="security" data-target="threatAnalysisSection">
+        <i class="fas fa-shield-alt"></i><span> Security Threats</span>
+      </a>
+      <a href="chart.html?type=system" data-category="system" data-target="threatAnalysisSection">
+        <i class="fas fa-cogs"></i><span> System Threats</span>
+      </a>
+      <a href="chart.html?type=application" data-category="application" data-target="threatAnalysisSection">
+        <i class="fas fa-mobile-alt"></i><span> App Threats</span>
+      </a>
+      <a href="audit.html" data-category="system" data-target="threatAnalysisSection">
+        <i class="fas fa-flag"></i> Marked For Review
+      </a>
+    </div>
+    <div class="content">
+      <h2 id="heading">Threat Analysis</h2>
+      <div class="content-wrapper">
+        <div class="chart-section">
+          <div class="legend-container">
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: #f9060e;"></span>
+              Critical: <span id="criticalCount">0</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: #3406ff;"></span>
+              Informative: <span id="informativeCount">0</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: #ffc30e;"></span>
+              Error: <span id="errorCount">0</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: #cac0ba;"></span>
+              Others: <span id="othersCount">0</span>
+            </div>
+          </div>
+
+          <div class="chart-container">
+            <canvas id="threatChart"></canvas>
+          </div>
+        </div>
+
+        <div class="grid-container">
+          <div class="grid-item" onclick="openList('critical')">Critical</div>
+          <div class="grid-item" onclick="openList('informative')">Informative</div>
+          <div class="grid-item" onclick="openList('error')">Error</div>
+          <div class="grid-item" onclick="openList('others')">Others</div>
+        </div>
+      </div>
+
+    </div>
+
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const category = urlParams.get('type');
+      console.log("Type from URL:", category);
+
+      document.getElementById('heading').innerText = `${category.charAt(0).toUpperCase() + category.slice(1)} Threat Analysis`;
+
+      function openList(level) {
+        window.location.href = `table.html?category=${encodeURIComponent(category)}&level=${encodeURIComponent(level)}`;
+      }
+    </script>
+    <script>
+      function fetchAll() {
+        fetch(`http://localhost:5000/countLogs?category=${encodeURIComponent(category)}`)
+          .then(response => response.json())
+          .then(data => {
+            console.log('Log count:', data);
+            const severityCounts = [
+              data.critical,
+              data.informative,
+              data.error,
+              data.others
+            ];
+
+            console.log('Serverty count: ', severityCounts)
+
+            updateChart([
+              severityCounts[0], //critical
+              severityCounts[1], //informative
+              severityCounts[2], //error
+              severityCounts[3] //others
+            ]);
+
+            document.getElementById("criticalCount").textContent = severityCounts[0]; //critical
+            document.getElementById("informativeCount").textContent = severityCounts[1]; //informative
+            document.getElementById("errorCount").textContent = severityCounts[2]; //error
+            document.getElementById("othersCount").textContent = severityCounts[3]; //others
+          })
+          .catch((error) => {
+            console.error('Error fetching logs:', error);
+            alert("An error occured while fetching")
+          });
+      }
+      fetchAll()
+    </script>
+    <script>
+      function updateChart(dataArray) {
+        const isEmpty = dataArray.every(val => val === 0);
+        if (isEmpty) {
+          console.warn("No data to show");
+        }
+        threatChart.data.datasets[0].data = dataArray;
+
+        console.log(dataArray)
+        threatChart.update();
+      }
+    </script>
+
+    <script>
+
+      const ctx = document.getElementById('threatChart').getContext('2d');
+      let threatChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: ['Critical', 'Informational', 'Error', 'Other'],
+          datasets: [{
+            data: [0, 0, 0, 0],
+            backgroundColor: ['#f9060e', '#3406ff', '#ffc30e', '#cac0ba ']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              enabled: true,
+              callbacks: {
+                label: function (tooltipItem) {
+                  let value = tooltipItem.raw;
+                  let sum = tooltipItem.dataset.data.reduce((a, b) => a + b, 0);
+                  let percentage = ((value / sum) * 100).toFixed(1) + "%";
+                  return ` ${value} (${percentage})`;
+                }
+              }
+            }
+          }
+        }
+      });
+
+      async function getThreatCount() {
+        const response = await fetch('/get-threats-count');
+        const data = await response.json();
+    
+        const threat_alerts_count = data.threat_alerts_count;
+        document.getElementById('alerts').innerText = `Alerts (${threat_alerts_count})`;
+      }
+
+      getThreatCount();
+
+      setInterval(() => {
+        getThreatCount();
+      }, 10000);
+    </script>
+</body>
+</html>
