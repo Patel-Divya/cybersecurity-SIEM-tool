@@ -26,8 +26,6 @@ def markAsReview():
     level = data.get('level', '')
     timeStamp = data.get('time','')
     eventId = data.get('eventId','')
-
-    # if not (category or level or timeStamp or eventID):
     
     if category and level and timeStamp and eventId:
         result = functions.markAsReview(category, level, eventId, timeStamp)
@@ -68,8 +66,6 @@ def deleteLog():
     level = data.get('level', '')
     timeStamp = data.get('time','')
     eventId = data.get('eventId','')
-
-    # if not (category or level or timeStamp or eventID):
     
     if category and level and timeStamp and eventId:
         result = functions.delete_log(eventId, timeStamp, level, category, fromAudit=True)
@@ -133,8 +129,6 @@ def markThreatForReview():
     category = data.get('category', '').lower()
     type = data.get('type', '').lower()
     id = data.get('id','').lower()
-
-    # if not (category or level or timeStamp or eventID):
     
     if category and type and id:
         result = functions.mark_threat_for_review(category, type, id)
