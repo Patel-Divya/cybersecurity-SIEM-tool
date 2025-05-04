@@ -1,0 +1,277 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- <title>Document</title> -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PARSHURAM - Dashboard</title>
+  <link rel="shortcut icon" href="./Resources/big.png" type="image/x-icon" hight="auto" width="auto">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="header">
+    <div class="title-container" onclick="window.location.href='/'" style="cursor: pointer;">
+      <div class="title">
+        <span style="--i:0;">P</span><span style="--i:1;">A</span><span style="--i:2;">R</span>
+        <span style="--i:3;">S</span><span style="--i:4;">H</span><span style="--i:5;">U</span>
+        <span style="--i:6;">R</span><span style="--i:7;">A</span><span style="--i:8;">M</span>
+      </div>
+      <div class="subtitle">A Security Platform</div>
+    </div>
+
+    <div class="nav-bar">
+      <a href="http://127.0.0.1:5000/home.html">Home</a>
+      <a href="http://127.0.0.1:5000/dashboard/dashboard.html">Dashboard</a>
+      <a href="http://127.0.0.1:5000/aboutus.html">About</a>
+      <a href="http://127.0.0.1:5000/ContactUs.html">Contact</a>
+    </div>
+  </div>
+
+  <div class="dashboard-container">
+    <div class="sidebar">
+      <a href="alerts.html" data-category="all" data-target="threatAnalysisSection">
+        <i class="fa fa-bell"></i><span id="alerts"> Alerts</span>
+      </a>
+      <a href="chart.html?type=all" data-category="all" data-target="threatAnalysisSection">
+        <i class="fas fa-globe"></i> All Threats
+      </a>
+      <a href="chart.html?type=security" data-category="security" data-target="threatAnalysisSection">
+        <i class="fas fa-shield-alt"></i> Security Threats
+      </a>
+      <a href="chart.html?type=system" data-category="system" data-target="threatAnalysisSection">
+        <i class="fas fa-cogs"></i> System Threats
+      </a>
+      <a href="chart.html?type=application" data-category="application" data-target="threatAnalysisSection">
+        <i class="fas fa-mobile-alt"></i> App Threats
+      </a>
+      <a href="audit.html" data-category="system" data-target="threatAnalysisSection">
+        <i class="fas fa-flag"></i> Marked For Review
+      </a>
+    </div>
+    <div class="content" style="justify-content: center;">
+      <!-- <div id="barGraphWrapper" class="content-section">
+        <canvas id="logSeverityChart" width="1250" height="510"></canvas>
+      </div> -->
+      <div class="content-widgets">
+      <!-- Bar Graph Widget -->
+      <div id="barGraphWrapper" class="widget">
+        <canvas id="logSeverityChart" width="400" height="300"></canvas>
+      </div>
+        <!-- Threat Count Widget -->
+        <div class="widget threat-widget">
+          <canvas id="threatCountChart" ></canvas>
+          <div class="widget-info">
+            <h3>Total Threats</h3>
+            <p>Total: <span id="targetCount">500</span> Threats</p>
+            <p>Resolved: <span id="detectedCount">250</span> Threats</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const categories = ["application", "security", "system"];
+      const severities = ["Critical", "Error", "Informational", "Other"];
+      const severityColors = {
+        "Critical": "#dc2626",      // red
+        "Error": "#f97316",         // orange
+        "Informational": "#3b82f6", // blue
+        "Other": "#6b7280"          // gray
+      };
+      
+      let barChartInstance = null;
+
+      async function fetchLogData() {
+        const chartData = {
+          labels: categories.map(c => c.charAt(0).toUpperCase() + c.slice(1)),
+          datasets: []
+        };
+
+        const severityMap = {
+          Critical: "critical",
+          Error: "error",
+          Informational: "informative",
+          Other: "others"
+        };
+
+        var logs = {};
+        
+        for(const category of categories){
+          try {
+            const res = await fetch(`http://localhost:5000/countLogs?category=${encodeURIComponent(category)}`);
+            logs[category] = await res.json();
+            // console.log('logs[category]: ',log s[category]);
+          } catch (error) {
+            console.log(`Failed to fetch ${category} log counts.`);
+          }
+        }
+
+        console.log(logs);
+        
+
+        for (const severity of severities) {
+          const severityCounts = [];
+          
+          for (const category of categories) { 
+            const severityKey = severityMap[severity];           
+            severityCounts.push(logs[category]?.[severityKey] ?? 0);
+          }
+
+          chartData.datasets.push({
+            label: severity,
+            data: severityCounts,
+            backgroundColor: severityColors[severity],
+            stack: "stack1",
+            barPercentage: 0.5,
+            categoryPercentage: 0.6
+          });
+        }
+
+        renderBarChart(chartData);
+      }
+
+      function renderBarChart(data) {
+        const ctx = document.getElementById("logSeverityChart").getContext("2d");
+        if (barChartInstance) {
+          barChartInstance.data = data;
+          barChartInstance.update();
+          return;
+        }
+
+        barChartInstance = new Chart(ctx, {
+          type: 'bar',
+          data: data,
+          options: {
+            responsive: true,
+            plugins: {
+              title: {
+                display: true,
+                text: 'Log Types vs Severity'
+              },
+              tooltip: {
+                mode: 'index',
+                intersect: false
+              }
+            },
+            interaction: {
+              mode: 'nearest',
+              axis: 'x',
+              intersect: false
+            },
+            scales: {
+              x: {
+                stacked: true,
+                title: {
+                  display: true,
+                  text: "Log Category"
+                }
+              },
+              y: {
+                stacked: true,
+                title: {
+                  display: true,
+                  text: "Number of Logs"
+                },
+                beginAtZero: true
+              }
+            }
+          }
+        });
+      }
+
+      fetchLogData();
+    </script>
+    
+    <script>
+      let doughnutChartInstance = null;
+      
+      const centerTextPlugin = {
+        id: 'centerText',
+        beforeDraw(chart) {
+          const { width, height } = chart;
+          const ctx = chart.ctx;
+          ctx.restore();
+          const fontSize = (height / 6).toFixed(2);
+          ctx.font = `${fontSize}px Arial`;
+          ctx.textBaseline = 'middle';
+          ctx.textAlign = 'center';
+          ctx.fillStyle = '#fff';
+
+          // Get the dynamic value from chart.options.plugins.centerTextValue
+          const text = chart.options.plugins.centerTextValue || '';
+          ctx.fillText(text, width / 2, height / 2);
+          ctx.save();
+        }
+      };
+
+      async function loadThreatData() {
+        try {
+          const response = await fetch('/threat-stats');
+          const data = await response.json();
+    
+          const totalThreats = data.total_threats;
+          const detectedThreats = data.resolved_threats;
+          const threat_alerts = data.threat_alerts_count;
+          const detectedPercentage = Math.round((detectedThreats / totalThreats) * 100);
+    
+          document.getElementById('targetCount').innerText = totalThreats;
+          document.getElementById('detectedCount').innerText = detectedThreats;
+          loadAlerts(threat_alerts);
+    
+          const ctx = document.getElementById('threatCountChart').getContext('2d');
+    
+          const chartData = {
+            datasets: [{
+              data: [detectedThreats, totalThreats - detectedThreats],
+              backgroundColor: ['#e85d04', '#333'],
+              borderWidth: 0
+            }]
+          };
+
+          if (doughnutChartInstance) {
+            doughnutChartInstance.data = chartData;
+            doughnutChartInstance.options.plugins.centerTextValue = `${detectedPercentage}%`;
+            doughnutChartInstance.update();
+            return;
+          }
+
+          doughnutChartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: chartData,
+            options: {
+              cutout: '70%',
+              responsive: true,
+              plugins: {
+                legend: { display: false },
+                tooltip: { enabled: false },
+                centerTextValue: `${detectedPercentage}%`   // Store value here
+              }
+            },
+            plugins: [centerTextPlugin]
+          });
+    
+        } catch (error) {
+          console.error('Error fetching or processing threat data:', error);
+        }
+      }
+
+      function loadAlerts(n){
+        document.getElementById('alerts').innerText = `Alerts (${n})`;
+      }
+    
+      // Call the function on page load
+      loadThreatData();
+
+      setInterval(() => {
+        fetchLogData();
+        loadThreatData();
+      }, 60000);
+    </script>     
+</body>
+</html>
