@@ -1,0 +1,3 @@
+Add an image for icon, and other 2 images in home page.
+
+Update your image file name in home page.
