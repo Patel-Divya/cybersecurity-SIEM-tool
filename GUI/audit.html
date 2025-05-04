@@ -57,7 +57,6 @@
             <button id="solvedCounter">Logs Fixed: 0</button>
           </div>
           <div class="table-container" id="table-container">
-            <!-- <div style="max-height: 400px; overflow-x: auto; overflow-y: auto; border: 1px solid #555; border-radius: 8px;"> -->
             <table style="width: 100%; border-collapse: collapse; color: white;">
               <thead style="background-color: orange; color: black; position: sticky; top: 0px; width: 100%;">
                 <tr>
@@ -70,7 +69,6 @@
                 </tr>
               </thead>
               <tbody id="logTableBody" style="background-color: #000000;">
-                <!-- Logs will populate here -->
               </tbody>
             </table>
           </div>
@@ -144,7 +142,6 @@
 
           console.log(log)
 
-          // Build readable HTML content
           const content = `
               <h3 style="margin-top: 0;">Log Details</h3>
               <p><strong>Event ID:</strong> ${log.event_id || log.EventID || "N/A"}</p>
